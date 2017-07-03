@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ros_package_template)
+project(ekumen_technical_exercise)
 
 ## Use C++11
 add_definitions(--std=c++11)
@@ -8,8 +8,10 @@ add_definitions(--std=c++11)
 find_package(catkin REQUIRED
   COMPONENTS
     roscpp
-    sensor_msgs
+    roslaunch
 )
+
+roslaunch_add_file_check(launch)
 
 ###################################
 ## catkin specific configuration ##
@@ -25,7 +27,6 @@ catkin_package(
     include
 #  LIBRARIES
   CATKIN_DEPENDS
-    sensor_msgs
 #  DEPENDS
 )
 
@@ -41,25 +42,29 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}_core
-   src/Algorithm.cpp
-)
+#add_library(${PROJECT_NAME}_core
+#   src/Algorithm.cpp
+#)
 
 ## Declare cpp executables
 add_executable(${PROJECT_NAME}
   src/${PROJECT_NAME}_node.cpp
-  src/RosPackageTemplate.cpp
+#  src/RosPackageTemplate.cpp
 )
 
 ## Specify libraries to link executable targets against
-target_link_libraries(${PROJECT_NAME}_core
+target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(${PROJECT_NAME}
-  ${PROJECT_NAME}_core
-  ${catkin_LIBRARIES}
-)
+add_dependencies(${PROJECT_NAME}
+  ${PROJECT_NAME}_EXPORTED_TARGETS
+  ${catkin_EXPORTED_TARGETS})
+
+#target_link_libraries(${PROJECT_NAME}
+#  ${PROJECT_NAME}_core
+#  ${catkin_LIBRARIES}
+#)
 
 #############
 ## Install ##
@@ -86,18 +91,3 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-#############
-## Testing ##
-#############
-
-if(CATKIN_ENABLE_TESTING)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test
-  test/test_ros_package_template.cpp
-  test/AlgorithmTest.cpp)
-endif()
-
-if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME}_core)
-endif()
